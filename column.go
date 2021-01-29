@@ -49,27 +49,32 @@ func newColumn(name, tableName string, dataType dataType, setSize bool, size int
 	}
 }
 
+// IsPrimaryKey sets the column as the table's primary key. 
 func (c *column) IsPrimaryKey() *column {
 	c.isPrimaryKey = true
 	c.IsIndex()
 	return c
 }
 
+// IsIndex sets this column to be an index
 func (c *column) IsIndex() *column {
 	c.key = fmt.Sprintf("%s_%s_key", c.tableName, c.name)
 	return c
 }
 
+// IsNull sets this column to accept NULL values
 func (c *column) IsNULL() *column {
 	c.nullable = true
 	return c
 }
 
+// SetDefaultValue sets the column's default value if there's no value passed for this column when inserting
 func (c *column) SetDefaultValue(defaultValue string) *column {
 	c.defaultValue = defaultValue
 	return c
 }
 
+// Reference sets this colum to reference another column in the database
 func (c *column) Reference(column *column, onUpdate, onDelete constraint) *column {
 	reference := &reference{
 		column:   column,

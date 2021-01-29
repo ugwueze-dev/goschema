@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"strings"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql" // import mysql driver
 	"github.com/jmoiron/sqlx"
 )
 
-// DBConfig represents database config
+// DBConfig is the database configuration struct
 type DBConfig struct {
-	Name     string
-	Host     string
-	Username string
-	Password string
+	Name     string // database name
+	Host     string // database server host
+	Username string // database server username
+	Password string // database server password
 }
 
 type GoSchema struct {
