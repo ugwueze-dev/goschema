@@ -21,7 +21,7 @@ type GoSchema struct {
 
 	dbConfig      DBConfig
 	purgeDatabase bool
-	tables        []*table
+	tables        []*Table
 }
 
 const (
@@ -37,7 +37,7 @@ func NewSchema(config DBConfig, purgeDatabase bool) *GoSchema {
 }
 
 // NewTable returns a database table instance
-func (s *GoSchema) NewTable(tableName string) *table {
+func (s *GoSchema) NewTable(tableName string) *Table {
 	table := newTable(tableName)
 	s.tables = append(s.tables, table)
 	return table
@@ -159,7 +159,7 @@ func (s *GoSchema) createTables() error {
 	return nil
 }
 
-func (s *GoSchema) getColumnQuery(columns []*column) string {
+func (s *GoSchema) getColumnQuery(columns []*Column) string {
 	var primaryKeyStr, queryString string
 	var keys, references []string
 
@@ -220,7 +220,7 @@ func (s *GoSchema) getColumnQuery(columns []*column) string {
 	return strings.TrimSuffix(queryString, ",\n")
 }
 
-func (s *GoSchema) getColumnQueryString(column *column, nullStatus, defaultValue, autoIncrement string) string {
+func (s *GoSchema) getColumnQueryString(column *Column, nullStatus, defaultValue, autoIncrement string) string {
 	var queryString string
 	vals := []interface{}{
 		column.name,

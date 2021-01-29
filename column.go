@@ -11,12 +11,12 @@ func (c constraint) String() string {
 }
 
 type reference struct {
-	column   *column
+	column   *Column
 	onUpdate constraint
 	onDelete constraint
 }
 
-type column struct {
+type Column struct {
 	name         string
 	tableName    string
 	dataType     dataType
@@ -39,8 +39,8 @@ const (
 	NoAction            = "NO ACTION"
 )
 
-func newColumn(name, tableName string, dataType dataType, setSize bool, size int) *column {
-	return &column{
+func newColumn(name, tableName string, dataType dataType, setSize bool, size int) *Column {
+	return &Column{
 		name:      name,
 		dataType:  dataType,
 		tableName: tableName,
@@ -49,33 +49,33 @@ func newColumn(name, tableName string, dataType dataType, setSize bool, size int
 	}
 }
 
-// IsPrimaryKey sets the column as the table's primary key. 
-func (c *column) IsPrimaryKey() *column {
+// IsPrimaryKey sets the column as the table's primary key.
+func (c *Column) IsPrimaryKey() *Column {
 	c.isPrimaryKey = true
 	c.IsIndex()
 	return c
 }
 
 // IsIndex sets this column to be an index
-func (c *column) IsIndex() *column {
+func (c *Column) IsIndex() *Column {
 	c.key = fmt.Sprintf("%s_%s_key", c.tableName, c.name)
 	return c
 }
 
 // IsNull sets this column to accept NULL values
-func (c *column) IsNULL() *column {
+func (c *Column) IsNULL() *Column {
 	c.nullable = true
 	return c
 }
 
 // SetDefaultValue sets the column's default value if there's no value passed for this column when inserting
-func (c *column) SetDefaultValue(defaultValue string) *column {
+func (c *Column) SetDefaultValue(defaultValue string) *Column {
 	c.defaultValue = defaultValue
 	return c
 }
 
 // Reference sets this colum to reference another column in the database
-func (c *column) Reference(column *column, onUpdate, onDelete constraint) *column {
+func (c *Column) Reference(column *Column, onUpdate, onDelete constraint) *Column {
 	reference := &reference{
 		column:   column,
 		onUpdate: onUpdate,
