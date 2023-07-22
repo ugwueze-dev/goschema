@@ -51,6 +51,6 @@ func (e *EnumColumn) Default(defaultValue interface{}) Common {
 	return e
 }
 
-func (e *EnumColumn) buildQuery(b *strings.Builder) string {
+func (e *EnumColumn) GenerateSchema(b *strings.Builder) string {
 	return b.String()
 }

@@ -177,13 +177,21 @@ func (t *Table) Year(columnName string) column.Common {
 	return c
 }
 
-func (t *Table) generateSchema(b *strings.Builder) {
-
-}
-
 /**func (t *Table) Foriegn(columnName string) *Reference {
 	ref := newReference(t.name, columnName)
 	t.references = append(t.references, ref)
 
 	return t.references[len(t.references)-1]
 }**/
+
+func (t *Table) generateSchema(b *strings.Builder) {
+	b.WriteString("CREATE TABLE `")
+	b.WriteString(t.name)
+	b.WriteString("` (\n")
+
+	for _, column := range t.columns {
+		column.GenerateSchema(b)
+	}
+
+	b.WriteString(");\n\n")
+}

@@ -10,7 +10,7 @@ type Common interface {
 	Index() Common // should user specify an index key/name?
 	AutoIncrement() Common
 	Default(defaultValue interface{}) Common
-	buildQuery(*strings.Builder) string
+	GenerateSchema(*strings.Builder) string
 }
 
 type Column struct {
@@ -74,6 +74,6 @@ func (c *Column) Default(defaultValue interface{}) Common {
 	return c
 }
 
-func (c *Column) buildQuery(b *strings.Builder) string {
+func (c *Column) GenerateSchema(b *strings.Builder) string {
 	return b.String()
 }
