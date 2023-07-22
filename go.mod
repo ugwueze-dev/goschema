@@ -1,4 +1,4 @@
-module ugwueze-dev/goschema
+module github.com/ugwueze-dev/goschema
 
 go 1.20
 

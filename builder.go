@@ -1,10 +1,6 @@
 package goschema
 
-import (
-	"fmt"
-	"strings"
-)
-
+/**
 func (g *GoSchema) build() string {
 	var b strings.Builder
 
@@ -67,3 +63,4 @@ func (g *GoSchema) buildColumn(b *strings.Builder, col *Column) {
 
 	b.WriteString(",\n")
 }
+**/
