@@ -2,50 +2,57 @@ package goschema
 
 type Column struct {
 	name         string
-	dataType     string
+	dataType     DataType
 	nullable     bool
 	defaultValue interface{}
-	size         int
+	//enumOptions  []interface{}
+	size int
 
 	isPrimaryKey bool
 	isUnique     bool
 	isUnsigned   bool
 }
 
+type DataType string
+
+func (d DataType) String() string {
+	return string(d)
+}
+
 const (
-	String = "varchar"
-	Char   = "char"
-	Binary = "binary"
-	Blob   = "blob"
-	Text   = "text"
-	Enum   = "enum"
+	String DataType = "varchar"
+	Char   DataType = "char"
+	Binary DataType = "binary"
+	Blob   DataType = "blob"
+	Text   DataType = "text"
+	Enum   DataType = "enum"
 
-	Boolean = "boolean"
+	Boolean DataType = "boolean"
 
-	Int       = "int"
-	TinyInt   = "tinyint"
-	SmallInt  = "smallint"
-	MediumInt = "mediumint"
-	BigInt    = "bigint"
+	Int       DataType = "int"
+	TinyInt   DataType = "tinyint"
+	SmallInt  DataType = "smallint"
+	MediumInt DataType = "mediumint"
+	BigInt    DataType = "bigint"
 
-	Float   = "float"
-	Double  = "double"
-	Decimal = "decimal"
+	Float   DataType = "float"
+	Double  DataType = "double"
+	Decimal DataType = "decimal"
 
-	Bit = "bit"
+	Bit DataType = "bit"
 
-	DateTime  = "datetime"
-	Timestamp = "timestamp"
-	Date      = "date"
-	Time      = "time"
-	Year      = "year"
+	DateTime  DataType = "datetime"
+	Timestamp DataType = "timestamp"
+	Date      DataType = "date"
+	Time      DataType = "time"
+	Year      DataType = "year"
 )
 
 const (
 	CurrentTimestamp = "CURRENT_TIMESTAMP"
 )
 
-func newColumn(columnName string, dataType string) *Column {
+func newColumn(columnName string, dataType DataType) *Column {
 	return &Column{
 		name:     columnName,
 		dataType: dataType,
@@ -82,3 +89,7 @@ func (c *Column) Unsigned() *Column {
 	c.isUnsigned = true
 	return c
 }
+
+/**func (c *Column) setEnumOptions(options []interface{}) {
+	c.enumOptions = options
+}**/

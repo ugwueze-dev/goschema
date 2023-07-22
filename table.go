@@ -56,12 +56,13 @@ func (t *Table) Text(columnName string) *Column {
 }
 
 // TODO handle enum options
-func (t *Table) Enum(columnName string, options []interface{}) *Column {
+/**func (t *Table) Enum(columnName string, options []interface{}) *Column {
 	c := newColumn(columnName, Enum)
+	c.setEnumOptions(options)
 	t.columns = append(t.columns, c)
 
 	return c
-}
+}**/
 
 func (t *Table) Boolean(columnName string) *Column {
 	c := newColumn(columnName, Boolean)

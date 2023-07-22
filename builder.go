@@ -46,7 +46,7 @@ func (g *GoSchema) buildColumn(b *strings.Builder, col *Column) {
 	b.WriteString("` ")
 
 	// datatype
-	b.WriteString(col.dataType)
+	b.WriteString(col.dataType.String())
 
 	// add size if set
 	if col.size != -1 {
