@@ -19,14 +19,10 @@ func NewDecimal(tableName, name string, precision, scale int) Common {
 	}
 }
 
-func (d *DecimalColumn) GenerateSchema(b *strings.Builder, isLastColumn bool) {
-	decimalWriterFunc := func(b *strings.Builder) {
-		b.WriteString("(")
-		b.WriteString(strconv.Itoa(d.precision))
-		b.WriteString(", ")
-		b.WriteString(strconv.Itoa(d.scale))
-		b.WriteString(")")
-	}
-
-	d.Column.generateColumnSchema(b, isLastColumn, decimalWriterFunc)
+func (d *DecimalColumn) writeSizeOrOption(b *strings.Builder) {
+	b.WriteString("(")
+	b.WriteString(strconv.Itoa(d.precision))
+	b.WriteString(", ")
+	b.WriteString(strconv.Itoa(d.scale))
+	b.WriteString(")")
 }

@@ -1,16 +1,16 @@
 package goschema
 
-import (
-	"strings"
-)
-
 type TableFunc func(table *Table)
 
 type Table struct {
-	hasIndexes bool
-	name       string
-	columns    []Common
+	name    string
+	columns []Common
 }
+
+const (
+	InnoDB         = "InnoDB"
+	DefaultCharset = "utf8mb4"
+)
 
 func newTable(tableName string) *Table {
 	return &Table{
@@ -174,8 +174,10 @@ func (t *Table) Year(columnName string) Common {
 	return c
 }
 
+/**
 func (t *Table) generateSchema(b *strings.Builder) bool {
-	b.WriteString("CREATE TABLE `")
+
+	/**b.WriteString("CREATE TABLE `")
 	b.WriteString(t.name)
 	b.WriteString("` (\n")
 
@@ -186,7 +188,7 @@ func (t *Table) generateSchema(b *strings.Builder) bool {
 		column.GenerateSchema(b, isLastColumn)
 
 		if !hasIndexes {
-			if column.IsPrimaryKey() || column.IsUnique() || column.HasReferences() {
+			if column.IsPrimaryKey() || column.IsUnique() || column.HasReference() {
 				hasIndexes = true
 			}
 		}
@@ -197,14 +199,15 @@ func (t *Table) generateSchema(b *strings.Builder) bool {
 	return hasIndexes
 }
 
-func (t *Table) generateIndexes(b *strings.Builder) {
+/**func (t *Table) generateIndexes(b *strings.Builder) {
 
-	b.WriteString("ALTER TABLE `")
+	/**b.WriteString("ALTER TABLE `")
 	b.WriteString(t.name)
 	b.WriteString("`")
 
 	for _, col := range t.columns {
 		col.GenerateIndex(b)
+		fmt.Println(col.name)
 	}
 
 	str := strings.TrimSuffix(b.String(), ",")
@@ -212,3 +215,4 @@ func (t *Table) generateIndexes(b *strings.Builder) {
 	b.WriteString(str)
 	b.WriteString(";\n\n")
 }
+**/

@@ -24,6 +24,8 @@ func newReference(columnName, tableName string) *Reference {
 	return &Reference{
 		tableName:  tableName,
 		columnName: columnName,
+		onUpdate:   NoAction,
+		onDelete:   NoAction,
 	}
 }
 

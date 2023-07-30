@@ -16,22 +16,16 @@ func NewEnum(tableName, name string, options []string) Common {
 	}
 }
 
-func (e *EnumColumn) GenerateSchema(b *strings.Builder, isLastColumn bool) {
-	optionsWriterFunc := func(b *strings.Builder) {
-		lastOptionIndex := len(e.options) - 1
-		b.WriteString("(")
+func (e *EnumColumn) writeSizeOrOption(b *strings.Builder) {
+	b.WriteString("(")
+	for index, option := range e.options {
+		b.WriteString("'")
+		b.WriteString(option)
+		b.WriteString("'")
 
-		for idx, option := range e.options {
-			b.WriteString("'")
-			b.WriteString(option)
-			b.WriteString("'")
-
-			if idx != lastOptionIndex {
-				b.WriteString(", ")
-			}
+		if index != len(e.options)-1 {
+			b.WriteString(", ")
 		}
-
-		b.WriteString(")")
 	}
-	e.Column.generateColumnSchema(b, isLastColumn, optionsWriterFunc)
+	b.WriteString(")")
 }
