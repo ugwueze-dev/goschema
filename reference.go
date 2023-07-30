@@ -7,12 +7,10 @@ func (c Constraint) String() string {
 }
 
 type Reference struct {
-	tableName           string
-	columnName          string
-	referenceTableName  string
-	referenceColumnName string
-	onUpdate            Constraint
-	onDelete            Constraint
+	tableName  string
+	columnName string
+	onUpdate   Constraint
+	onDelete   Constraint
 }
 
 const (
@@ -22,18 +20,11 @@ const (
 	SetNull  Constraint = "SET NULL"
 )
 
-func newReference(tableName, columnName string) *Reference {
+func newReference(columnName, tableName string) *Reference {
 	return &Reference{
 		tableName:  tableName,
 		columnName: columnName,
 	}
-}
-
-func (r *Reference) References(referenceTableName, referenceColumnName string) *Reference {
-	r.referenceTableName = referenceTableName
-	r.referenceColumnName = referenceColumnName
-
-	return r
 }
 
 func (r *Reference) OnUpdate(c Constraint) *Reference {

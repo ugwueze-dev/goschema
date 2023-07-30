@@ -2,16 +2,14 @@ package goschema
 
 import (
 	"strings"
-
-	"github.com/ugwueze-dev/goschema/column"
 )
 
 type TableFunc func(table *Table)
 
 type Table struct {
-	name    string
-	columns []column.Common
-	//references []*Reference
+	hasIndexes bool
+	name       string
+	columns    []Common
 }
 
 func newTable(tableName string) *Table {
@@ -20,178 +18,197 @@ func newTable(tableName string) *Table {
 	}
 }
 
-func (t *Table) Increments(columnName string) column.Common {
-	c := column.New(columnName, column.Int)
+func (t *Table) Increments(columnName string) Common {
+	c := newColumn(t.name, columnName, Int)
 	t.columns = append(t.columns, c)
 	c.AutoIncrement()
 
 	return c
 }
 
-func (t *Table) String(columnName string) column.Common {
-	c := column.New(columnName, column.String)
+func (t *Table) String(columnName string) Common {
+	c := newColumn(t.name, columnName, String)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
 // TODO set correct default char size
-func (t *Table) Char(columnName string) column.Common {
-	c := column.New(columnName, column.Char).Size(4)
+func (t *Table) Char(columnName string) Common {
+	c := newColumn(t.name, columnName, Char).Size(4)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Enum(columnName string, options []interface{}) column.Common {
-	c := column.NewEnum(columnName, options)
+func (t *Table) Enum(columnName string, options []string) Common {
+	c := NewEnum(t.name, columnName, options)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Binary(columnName string) column.Common {
-	c := column.New(columnName, column.Binary)
+func (t *Table) Binary(columnName string) Common {
+	c := newColumn(t.name, columnName, Binary)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Blob(columnName string) column.Common {
-	c := column.New(columnName, column.Binary)
+func (t *Table) Blob(columnName string) Common {
+	c := newColumn(t.name, columnName, Binary)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Text(columnName string) column.Common {
-	c := column.New(columnName, column.Text)
+func (t *Table) Text(columnName string) Common {
+	c := newColumn(t.name, columnName, Text)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Boolean(columnName string) column.Common {
-	c := column.New(columnName, column.Boolean)
+func (t *Table) Boolean(columnName string) Common {
+	c := newColumn(t.name, columnName, Boolean)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Int(columnName string) column.Common {
-	c := column.New(columnName, column.Int)
+func (t *Table) Int(columnName string) Common {
+	c := newColumn(t.name, columnName, Int)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) TinyInt(columnName string) column.Common {
-	c := column.New(columnName, column.TinyInt)
+func (t *Table) TinyInt(columnName string) Common {
+	c := newColumn(t.name, columnName, TinyInt)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) SmallInt(columnName string) column.Common {
-	c := column.New(columnName, column.SmallInt)
+func (t *Table) SmallInt(columnName string) Common {
+	c := newColumn(t.name, columnName, SmallInt)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) MediumInt(columnName string) column.Common {
-	c := column.New(columnName, column.MediumInt)
+func (t *Table) MediumInt(columnName string) Common {
+	c := newColumn(t.name, columnName, MediumInt)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) BigInt(columnName string) column.Common {
-	c := column.New(columnName, column.BigInt)
+func (t *Table) BigInt(columnName string) Common {
+	c := newColumn(t.name, columnName, BigInt)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Float(columnName string) column.Common {
-	c := column.New(columnName, column.Float)
+func (t *Table) Float(columnName string) Common {
+	c := newColumn(t.name, columnName, Float)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Double(columnName string) column.Common {
-	c := column.New(columnName, column.Double)
+func (t *Table) Double(columnName string) Common {
+	c := newColumn(t.name, columnName, Double)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-// TODO Handle decimal
-func (t *Table) Decimal(columnName string, precision, scale int) column.Common {
-	c := column.New(columnName, column.Decimal)
+func (t *Table) Decimal(columnName string, precision, scale int) Common {
+	c := NewDecimal(t.name, columnName, precision, scale)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Bit(columnName string) column.Common {
-	c := column.New(columnName, column.Bit)
+func (t *Table) Bit(columnName string) Common {
+	c := newColumn(t.name, columnName, Bit)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) DateTime(columnName string) column.Common {
-	c := column.New(columnName, column.DateTime)
+func (t *Table) DateTime(columnName string) Common {
+	c := newColumn(t.name, columnName, DateTime)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Timestamp(columnName string) column.Common {
-	c := column.New(columnName, column.Timestamp)
+func (t *Table) Timestamp(columnName string) Common {
+	c := newColumn(t.name, columnName, Timestamp)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Date(columnName string) column.Common {
-	c := column.New(columnName, column.Date)
+func (t *Table) Date(columnName string) Common {
+	c := newColumn(t.name, columnName, Date)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Time(columnName string) column.Common {
-	c := column.New(columnName, column.Time)
+func (t *Table) Time(columnName string) Common {
+	c := newColumn(t.name, columnName, Time)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-func (t *Table) Year(columnName string) column.Common {
-	c := column.New(columnName, column.Year)
+func (t *Table) Year(columnName string) Common {
+	c := newColumn(t.name, columnName, Year)
 	t.columns = append(t.columns, c)
 
 	return c
 }
 
-/**func (t *Table) Foriegn(columnName string) *Reference {
-	ref := newReference(t.name, columnName)
-	t.references = append(t.references, ref)
-
-	return t.references[len(t.references)-1]
-}**/
-
-func (t *Table) generateSchema(b *strings.Builder) {
+func (t *Table) generateSchema(b *strings.Builder) bool {
 	b.WriteString("CREATE TABLE `")
 	b.WriteString(t.name)
 	b.WriteString("` (\n")
 
-	for _, column := range t.columns {
-		column.GenerateSchema(b)
+	var hasIndexes bool
+
+	for index, column := range t.columns {
+		isLastColumn := index == len(t.columns)-1
+		column.GenerateSchema(b, isLastColumn)
+
+		if !hasIndexes {
+			if column.IsPrimaryKey() || column.IsUnique() || column.HasReferences() {
+				hasIndexes = true
+			}
+		}
 	}
 
 	b.WriteString(");\n\n")
+
+	return hasIndexes
+}
+
+func (t *Table) generateIndexes(b *strings.Builder) {
+
+	b.WriteString("ALTER TABLE `")
+	b.WriteString(t.name)
+	b.WriteString("`")
+
+	for _, col := range t.columns {
+		col.GenerateIndex(b)
+	}
+
+	str := strings.TrimSuffix(b.String(), ",")
+	b.Reset()
+	b.WriteString(str)
+	b.WriteString(";\n\n")
 }

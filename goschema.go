@@ -1,6 +1,8 @@
 package goschema
 
 import (
+	"io/ioutil"
+	"os"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -21,24 +23,17 @@ func (g *GoSchema) Table(tableName string, cb TableFunc) {
 }
 
 func (g *GoSchema) GenerateSchema() string {
-	b := &strings.Builder{}
+	var b strings.Builder
 
 	for _, table := range g.tables {
-		// TODO handle table references
-		table.generateSchema(b)
+		table.hasIndexes = table.generateSchema(&b)
 	}
+
+	for _, table := range g.tables {
+		table.generateIndexes(&b)
+	}
+
+	ioutil.WriteFile("schema.sql", []byte(b.String()), os.ModePerm)
 
 	return b.String()
 }
-
-/**
-func (g *GoSchema) Table(tableName string, cb func(table *Table)) {
-	table := newTable(tableName)
-	g.tables = append(g.tables, table)
-	cb(table)
-}
-
-func (g *GoSchema) Build() string {
-	return g.build()
-}
-**/
