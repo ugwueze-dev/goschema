@@ -1,41 +1,17 @@
 package goschema
 
+type TableFunc func(table *Table)
+
+// Table represents a database table
+// Each table will hold a slice of structs representing every column in it
 type Table struct {
 	name    string
-	columns []*Column
-}
-
-type dataType string
-
-func (d dataType) String() string {
-	return string(d)
+	columns []Common
 }
 
 const (
-	Int        dataType = "INT"
-	tinyInt             = "TINYINT"
-	smallInt            = "SMALLINT"
-	mediumInt           = "MEDIUMINT"
-	bigInt              = "BIGINT"
-	float               = "FLOAT"
-	double              = "DOUBLE"
-	decimal             = "DECIMAL"
-	char                = "CHAR"
-	varChar             = "VARCHAR"
-	blob                = "BLOB"
-	tinyBlob            = "TINYBLOB"
-	mediumBlob          = "MEDIUMBLOB"
-	longBlob            = "LONGBLOB"
-	text                = "TEXT"
-	tinyText            = "TINYTEXT"
-	mediumText          = "MEDIUMTEXT"
-	longText            = "LONGTEXT"
-	enum                = "ENUM"
-	date                = "DATE"
-	dateTime            = "DATETIME"
-	timestamp           = "TIMESTAMP"
-	time                = "time"
-	year                = "year"
+	InnoDB         = "InnoDB"
+	DefaultCharset = "utf8mb4"
 )
 
 func newTable(tableName string) *Table {
@@ -44,137 +20,180 @@ func newTable(tableName string) *Table {
 	}
 }
 
-// add a new column to the current table
-func (t *Table) newColumn(columnName string, dataType dataType, setSize bool, size int) *Column {
-	column := newColumn(columnName, t.name, dataType, setSize, size)
-	t.columns = append(t.columns, column)
+func (t *Table) Increments(columnName string) Common {
+	c := newColumn(t.name, columnName, Int)
+	t.columns = append(t.columns, c)
+	c.AutoIncrement()
 
-	return column
+	return c
 }
 
-// Int represents a database column of datattype INT
-func (t *Table) Int(columnName string, size int) *Column {
-	return t.newColumn(columnName, Int, true, size)
+// String creates a new Varchar column on the table
+func (t *Table) String(columnName string) Common {
+	c := newColumn(t.name, columnName, String)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// TinyInt represents a database column of datattype TINYINT
-func (t *Table) TinyInt(columnName string, size int) *Column {
-	return t.newColumn(columnName, tinyInt, true, size)
+// Char creates a new char column on the table
+func (t *Table) Char(columnName string) Common {
+	c := newColumn(t.name, columnName, Char).Size(4)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// MediumInt represents a database column of datattype MEDIUMINT
-func (t *Table) MediumInt(columnName string, size int) *Column {
-	return t.newColumn(columnName, mediumInt, true, size)
+// Enum creates a new Enum column on the table.
+// the allowed options are passed in as a string slice as the second argument,
+func (t *Table) Enum(columnName string, options []string) Common {
+	c := NewEnum(t.name, columnName, options)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// BigInt represents a database column of datattype BIGINT
-func (t *Table) BigInt(columnName string, size int) *Column {
-	return t.newColumn(columnName, bigInt, true, size)
+// Binary creates a new Binary column on the table
+func (t *Table) Binary(columnName string) Common {
+	c := newColumn(t.name, columnName, Binary)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// Float represents a database column of datattype FLOAT
-func (t *Table) Float(columnName string, length, numDecimals int) *Column {
-	column := t.newColumn(columnName, float, false, 0)
-	column.length = length
-	column.numDecimals = numDecimals
+// Blob creates a new Varchar column on the table
+func (t *Table) Blob(columnName string) Common {
+	c := newColumn(t.name, columnName, Binary)
+	t.columns = append(t.columns, c)
 
-	return column
+	return c
 }
 
-// Double represents a database column of datattype DOUBLE
-func (t *Table) Double(columnName string, length, numDecimals int) *Column {
-	column := t.newColumn(columnName, double, false, 0)
-	column.length = length
-	column.numDecimals = numDecimals
+// Text creates a new text column on the table
+func (t *Table) Text(columnName string) Common {
+	c := newColumn(t.name, columnName, Text)
+	t.columns = append(t.columns, c)
 
-	return column
+	return c
 }
 
-// Decimal represents a database column of datattype DECIMAL
-func (t *Table) Decimal(columnName string, length, numDecimals int) *Column {
-	column := t.newColumn(columnName, decimal, false, 0)
-	column.length = length
-	column.numDecimals = numDecimals
+// Boolean creates a new boolean column on the table
+func (t *Table) Boolean(columnName string) Common {
+	c := newColumn(t.name, columnName, Boolean)
+	t.columns = append(t.columns, c)
 
-	return column
+	return c
 }
 
-// Char represents a database column of datattype CHAR
-func (t *Table) Char(columnName string, size uint) *Column {
-	return t.newColumn(columnName, char, true, int(size))
+// Int creates a new interger column on the table
+func (t *Table) Int(columnName string) Common {
+	c := newColumn(t.name, columnName, Int)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// Varchar represents a database column of datattype VARCHAR
-func (t *Table) Varchar(columnName string, size uint) *Column {
-	return t.newColumn(columnName, varChar, true, int(size))
+// TinyInt creates a new tiny integer column on the table
+func (t *Table) TinyInt(columnName string) Common {
+	c := newColumn(t.name, columnName, TinyInt)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// Blog represents a database column of datattype BLOB
-func (t *Table) Blob(columnName string, size uint) *Column {
-	return t.newColumn(columnName, blob, true, int(size))
+// SmallInt creates a small integer column on the table
+func (t *Table) SmallInt(columnName string) Common {
+	c := newColumn(t.name, columnName, SmallInt)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// TinyBlob represents a database column of datattype TINYBLOB
-func (t *Table) TinyBlob(columnName string) *Column {
-	return t.newColumn(columnName, tinyBlob, false, 0)
+// MediumInt creates a new medium integer column on the table
+func (t *Table) MediumInt(columnName string) Common {
+	c := newColumn(t.name, columnName, MediumInt)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// MediumBlob represents a database column of datattype MEDIUMBLOB
-func (t *Table) MediumBlob(columnName string) *Column {
-	return t.newColumn(columnName, mediumBlob, false, 0)
+// BigInt creates a new big integer column on the table
+func (t *Table) BigInt(columnName string) Common {
+	c := newColumn(t.name, columnName, BigInt)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// LongBlob represents a database column of datattype LONGBLOB
-func (t *Table) LongBlob(columnName string) *Column {
-	return t.newColumn(columnName, longBlob, false, 0)
+// Float creates a new float column on the table
+func (t *Table) Float(columnName string) Common {
+	c := newColumn(t.name, columnName, Float)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// Text represents a database column of datattype TEXT
-func (t *Table) Text(columnName string, size uint) *Column {
-	return t.newColumn(columnName, text, true, int(size))
+// Double creates a new double column on the table
+func (t *Table) Double(columnName string) Common {
+	c := newColumn(t.name, columnName, Double)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// TinyText represents a database column of datattype TINYTEXT
-func (t *Table) TinyText(columnName string) *Column {
-	return t.newColumn(columnName, tinyText, false, 0)
+// Decimal creates a new decimal column on the table
+// precision and scale is required as arguments
+func (t *Table) Decimal(columnName string, precision, scale int) Common {
+	c := NewDecimal(t.name, columnName, precision, scale)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// MediumText represents a database column of datattype MEDIUMTEXT
-func (t *Table) MediumText(columnName string) *Column {
-	return t.newColumn(columnName, mediumText, false, 0)
+// Bit creates a new bit column on the table
+func (t *Table) Bit(columnName string) Common {
+	c := newColumn(t.name, columnName, Bit)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// LongText represents a database column of datattype LONGTEXT
-func (t *Table) LongText(columnName string) *Column {
-	return t.newColumn(columnName, longText, false, 0)
+// DateTime creates a new datetime column on the table
+func (t *Table) DateTime(columnName string) Common {
+	c := newColumn(t.name, columnName, DateTime).Nullable()
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// Enum represents a database column of datattype ENUM
-func (t *Table) Enum(columnName string, variants []string) *Column {
-	return t.newColumn(columnName, enum, false, 0)
+// Timestamp creates a new timestamp column on the table
+func (t *Table) Timestamp(columnName string) Common {
+	c := newColumn(t.name, columnName, Timestamp).Nullable()
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// Date represents a database column of datattype DATE
-func (t *Table) Date(columnName string) *Column {
-	return t.newColumn(columnName, date, false, 0)
+// Date creates a new date column on the table
+func (t *Table) Date(columnName string) Common {
+	c := newColumn(t.name, columnName, Date).Nullable()
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// DateTime represents a database column of datattype DATETIME
-func (t *Table) DateTime(columnName string) *Column {
-	return t.newColumn(columnName, dateTime, false, 0)
+// Time creates a new time column on the table
+func (t *Table) Time(columnName string) Common {
+	c := newColumn(t.name, columnName, Time)
+	t.columns = append(t.columns, c)
+
+	return c
 }
 
-// Timestamp represents a database column of datattype TIMESTAMP
-func (t *Table) Timestamp(columnName string) *Column {
-	return t.newColumn(columnName, timestamp, false, 0)
-}
+// Year creates a new year column on the table
+func (t *Table) Year(columnName string) Common {
+	c := newColumn(t.name, columnName, Year)
+	t.columns = append(t.columns, c)
 
-// Time represents a database column of datattype TIME
-func (t *Table) Time(columnName string) *Column {
-	return t.newColumn(columnName, time, false, 0)
-}
-
-// Year represents a database column of datattype YEAR
-func (t *Table) Year(columnName string) *Column {
-	return t.newColumn(columnName, year, false, 0)
+	return c
 }
