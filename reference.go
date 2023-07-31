@@ -7,10 +7,14 @@ func (c Constraint) String() string {
 }
 
 type Reference struct {
-	tableName  string
+	// tableName is the name of the referenced table
+	tableName string
+	// columnName is the name of the column on the reference table we are referencing
 	columnName string
-	onUpdate   Constraint
-	onDelete   Constraint
+	// onUpdate defines the action to perform when the parent column is updated
+	onUpdate Constraint
+	// onUpdate defines the action to perform when the parent column is deleted
+	onDelete Constraint
 }
 
 const (

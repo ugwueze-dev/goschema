@@ -20,16 +20,26 @@ type commonData struct {
 }
 
 type Common interface {
+	// Size sets the size of the column
 	Size(size uint8) Common
+	// PrimaryKey adds the Primary Key constraint to this column
 	PrimaryKey() Common
+	// Unsigned sets the integer column to be unsigned
 	Unsigned() Common
+	// Unique adds the unique constraint to this column
 	Unique() Common
 	Index() Common // should user specify an index key/name?
+	// AutoIncrement sets this column to auto increment, and adds the primary key constraint.
 	AutoIncrement() Common
+	// Default sets the default value of the column
 	Default(defaultValue string) Common
+	// Nullable sets the default value to be null
 	Nullable() Common
+	// References define a foreign key reference for this column
 	References(columnName, tableName string) Common
+	// getCommonData returns the column properties and constraints
 	getCommonData() commonData
+	//writeSizeOrOption is used to write the size or options in building the query
 	writeSizeOrOption(b *strings.Builder)
 }
 
@@ -96,7 +106,6 @@ func (c *Column) getCommonData() commonData {
 
 func (c *Column) writeSizeOrOption(b *strings.Builder) {
 	if c.size > 0 {
-		//b.WriteString(fmt.Sprintf("(%d)", c.size))
 		b.WriteString("(")
 		b.WriteString(strconv.Itoa(int(c.size)))
 		b.WriteString(")")
